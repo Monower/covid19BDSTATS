@@ -35,15 +35,17 @@
     </section>
 
     <!-- Total infected and death -->
-    <section>
-        <div class="container">
-            <h3>Total Infected: <span style="background-color: red; color: white;" id="id7"></span> </h3>
-            <h3>Total Deaths: <span style="background-color: red; color: white;" id="id8"></span></h3>
+    <section class="p-5 mb-5">
+        <div class="container row text-center">
+
+            <h3 class="col">Total Infected: <span style="background-color: red; color: white;" id="id7"></span> </h3>
+            <h3 class="col">Total Deaths: <span style="background-color: red; color: white;" id="id8"></span></h3>
         </div>
     </section>
 
     <section class="pt-5 ">
         <div class="container text-center p-5">
+            <h2>Daily Infections</h2>
             
             <canvas id="infected"> 
             </canvas>
@@ -51,11 +53,13 @@
 
         </div>
         <div class="container text-center p-5">
+            <h2>Daily Deaths</h2>
             <canvas id="dead"> 
 
             </canvas>
         </div>
         <div class="container text-center p-5">
+            <h2>Daily Recovered</h2>
             <canvas id="cured"> 
 
             </canvas>
@@ -70,7 +74,7 @@
                 type: 'GET',
                 url: 'https://pomber.github.io/covid19/timeseries.json',
                 success: function(data){
-                    //console.log(data.Bangladesh);
+                   
                     let dates= [];
                     let infected=[];
                     let dinfected=[];
@@ -103,42 +107,20 @@
                     }
                     drecovered[0]=0;
 
-                    console.log(dates);
-                    console.log(dinfected);
-                    console.log(ddeaths);
-                    console.log(drecovered);
-/*                     var date1=data.Bangladesh[0].date;
-                    $('#id1').text(date1); */
-/*                     var len=data.Bangladesh;
-                    var b=len.length;
-                    var data2=data.Bangladesh[b-1].date;
-                    $('#id1').text(data2);
-                    var data3=data.Bangladesh[b-2].date;
-                    $('#id2').text(data3);
+                    
+                    $('#id1').text(dates[len-1]);
+                    $('#id2').text(dates[len-2]);
 
                     // for first one
-                    let newinfect=data.Bangladesh[b-1].confirmed;
-                    let oldinfect=data.Bangladesh[b-2].confirmed;
-                    let newinfect1=newinfect-oldinfect;
-                    $('#id3').text(newinfect1);
-                    let newdeath=data.Bangladesh[b-1].deaths;
-                    let olddeath=data.Bangladesh[b-2].deaths;
-                    let newdeath1=newdeath-olddeath;
-                    $('#id4').text(newdeath1);
+                    $('#id3').text(dinfected[len-1]);
+                    $('#id4').text(ddeaths[len-1]);
 
                     // for second one
-                    let o1=data.Bangladesh[b-2].confirmed;
-                    let o2=data.Bangladesh[b-3].confirmed;
-                    let o3=o1-o2;
-                    $('#id5').text(o3);
+                    $('#id5').text(dinfected[len-2]);
+                    $('#id6').text(ddeaths[len-2]);
 
-                    let od4=data.Bangladesh[b-2].deaths;
-                    let od5=data.Bangladesh[b-3].deaths;
-                    let od6=od4-od5;
-                    $('#id6').text(od6);
-
-                    $('#id7').text(newinfect);
-                    $('#id8').text(newdeath); */
+                    $('#id7').text(infected[len-1]);
+                    $('#id8').text(deaths[len-1]);
 
                     //infected
                     let mychart=$('#infected')[0].getContext('2d');
@@ -163,7 +145,7 @@
                         data: {
                             labels: dates,
                             datasets: [{
-                                label: 'Dead',
+                                label: 'Deaths',
                                 data: ddeaths,
                                 backgroundColor: 'dark'
                             }]
