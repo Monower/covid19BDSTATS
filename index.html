@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covid-19</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://bootswatch.com/5/flatly/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <section class="bg-dark text-center py-5">
+        <div class="h1 container">
+            Covid-19 Stats of Bangladesh
+        </div>
+    </section>
+
+    <!-- information -->
+    <section class="p-5 mb-5 justify-content-center">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md">
+                    <h3>Infected and Deaths on <span class="bg-warning" id="id1"></span></h3>
+                    <h5>Infected: <span id="id3"></span></h5>
+                    <h5>Death: <span id="id4"></span></h5>
+                </div>
+                <div class="col-md">
+                    <h3>Infected and deaths on <span class="bg-warning" id="id2"></span></h3>
+                    <h5>Infected: <span id="id5"></span></h5>
+                    <h5>Death: <span id="id6"></span></h5>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Total infected and death -->
+    <section>
+        <div class="container">
+            <h3>Total Infected: <span style="background-color: red; color: white;" id="id7"></span> </h3>
+            <h3>Total Deaths: <span style="background-color: red; color: white;" id="id8"></span></h3>
+        </div>
+    </section>
+
+    <section class="pt-5 ">
+        <div class="container text-center p-5">
+            
+            <canvas id="infected"> 
+            </canvas>
+
+
+        </div>
+        <div class="container text-center p-5">
+            <canvas id="dead"> 
+
+            </canvas>
+        </div>
+        <div class="container text-center p-5">
+            <canvas id="cured"> 
+
+            </canvas>
+        </div>
+
+    </section>
+
+
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                type: 'GET',
+                url: 'https://pomber.github.io/covid19/timeseries.json',
+                success: function(data){
+                    //console.log(data.Bangladesh);
+                    let dates= [];
+                    let infected=[];
+                    let dinfected=[];
+                    let deaths=[];
+                    let ddeaths=[];
+                    let recovered=[];
+                    let drecovered=[];
+                    var len=data.Bangladesh;
+                    len=len.length;
+                    for (let i = 0; i < len; i++) {
+                        dates[i] =data.Bangladesh[i].date;
+                        infected[i] =data.Bangladesh[i].confirmed;
+                        deaths[i]=data.Bangladesh[i].deaths;
+                        recovered[i]=data.Bangladesh[i].recovered;
+                        
+                    }
+
+                    for(let i=len-1;i>=1;i--){
+                        dinfected[i]=infected[i]-infected[i-1];
+                    }
+                    dinfected[0]=0;
+
+                    for(let i=len-1;i>=1;i--){
+                        ddeaths[i]=deaths[i]-deaths[i-1];
+                    }
+                    ddeaths[0]=0;
+
+                    for(let i=len-1;i>=1;i--){
+                        drecovered[i]=recovered[i]-recovered[i-1];
+                    }
+                    drecovered[0]=0;
+
+                    console.log(dates);
+                    console.log(dinfected);
+                    console.log(ddeaths);
+                    console.log(drecovered);
+/*                     var date1=data.Bangladesh[0].date;
+                    $('#id1').text(date1); */
+/*                     var len=data.Bangladesh;
+                    var b=len.length;
+                    var data2=data.Bangladesh[b-1].date;
+                    $('#id1').text(data2);
+                    var data3=data.Bangladesh[b-2].date;
+                    $('#id2').text(data3);
+
+                    // for first one
+                    let newinfect=data.Bangladesh[b-1].confirmed;
+                    let oldinfect=data.Bangladesh[b-2].confirmed;
+                    let newinfect1=newinfect-oldinfect;
+                    $('#id3').text(newinfect1);
+                    let newdeath=data.Bangladesh[b-1].deaths;
+                    let olddeath=data.Bangladesh[b-2].deaths;
+                    let newdeath1=newdeath-olddeath;
+                    $('#id4').text(newdeath1);
+
+                    // for second one
+                    let o1=data.Bangladesh[b-2].confirmed;
+                    let o2=data.Bangladesh[b-3].confirmed;
+                    let o3=o1-o2;
+                    $('#id5').text(o3);
+
+                    let od4=data.Bangladesh[b-2].deaths;
+                    let od5=data.Bangladesh[b-3].deaths;
+                    let od6=od4-od5;
+                    $('#id6').text(od6);
+
+                    $('#id7').text(newinfect);
+                    $('#id8').text(newdeath); */
+
+                    //infected
+                    let mychart=$('#infected')[0].getContext('2d');
+
+                    let linechart= new Chart(mychart,{
+                        type: 'line',
+                        data: {
+                            labels: dates,
+                            datasets: [{
+                                label: 'Infected',
+                                data: dinfected,
+                                backgroundColor: '#8E44AD'
+                            }]
+                        }
+                    })
+
+                    //dead
+                    let chart=$('#dead')[0].getContext('2d');
+
+                    let linehart= new Chart(chart,{
+                        type: 'line',
+                        data: {
+                            labels: dates,
+                            datasets: [{
+                                label: 'Dead',
+                                data: ddeaths,
+                                backgroundColor: 'dark'
+                            }]
+                        }
+                    })
+
+                    //recovered
+                    let chartr=$('#cured')[0].getContext('2d');
+
+                    let cured= new Chart(chartr,{
+                        type: 'line',
+                        data: {
+                            labels: dates,
+                            datasets: [{
+                                label: 'Recovered',
+                                data: drecovered,
+                                backgroundColor: '#48C9B0'
+                            }]
+                        }
+                    })
+
+
+
+                }
+            })
+        })
+
+
+    </script>
+</body>
+</html>
